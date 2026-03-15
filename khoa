@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bài nối kiến thức</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#f2f2f2;
+}
+
+h2{
+margin-top:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+display:flex;
+flex-wrap:wrap;
+gap:30px;
+justify-content:center;
+}
+
+.column{
+flex:1 1 350px;
+}
+
+.box{
+border:2px dashed #888;
+padding:10px;
+margin:10px;
+min-height:50px;
+background:white;
+}
+
+.item{
+border:1px solid black;
+padding:8px;
+margin:8px;
+background:#e8f0ff;
+cursor:grab;
+}
+
+.correct{
+background:#b6ffb6;
+}
+
+.wrong{
+background:#ffb6b6;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+margin:10px;
+cursor:pointer;
+}
+
+.bank{
+border:2px solid #ccc;
+padding:10px;
+background:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>Nối cột A với cột B</h2>
+
+<div class="container">
+
+<div class="column">
+
+<p>1. Phương pháp điện phân nóng chảy</p>
+<div class="box" data-answer="D"></div>
+
+<p>2. Phương pháp nhiệt luyện</p>
+<div class="box" data-answer="E"></div>
+
+<p>3. Phương pháp thủy luyện</p>
+<div class="box" data-answer="A"></div>
+
+<p>4. Tái chế kim loại</p>
+<div class="box" data-answer="C"></div>
+
+<p>5. Quặng kim loại</p>
+<div class="box" data-answer="B"></div>
+
+</div>
+
+<div class="column bank" id="bank">
+
+<div class="item" draggable="true" data-id="A">
+A. Dùng dung dịch để hòa tan kim loại rồi thu hồi bằng phản ứng hóa học
+</div>
+
+<div class="item" draggable="true" data-id="B">
+B. Hợp chất tự nhiên chứa kim loại có thể khai thác
+</div>
+
+<div class="item" draggable="true" data-id="C">
+C. Thu hồi kim loại từ phế liệu để sử dụng lại
+</div>
+
+<div class="item" draggable="true" data-id="D">
+D. Dùng dòng điện để tách kim loại từ hợp chất nóng chảy
+</div>
+
+<div class="item" draggable="true" data-id="E">
+E. Dùng chất khử ở nhiệt độ cao để khử oxit kim loại
+</div>
+
+</div>
+
+</div>
+
+<button onclick="check()">Kiểm tra</button>
+<button onclick="resetGame()">Làm lại</button>
+
+<script>
+
+let items=document.querySelectorAll(".item")
+let boxes=document.querySelectorAll(".box")
+let bank=document.getElementById("bank")
+
+items.forEach(item=>{
+item.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("text",item.dataset.id)
+})
+})
+
+boxes.forEach(box=>{
+
+box.addEventListener("dragover",e=>e.preventDefault())
+
+box.addEventListener("drop",e=>{
+
+e.preventDefault()
+
+let id=e.dataTransfer.getData("text")
+let el=document.querySelector('[data-id="'+id+'"]')
+
+if(box.children.length>0){
+bank.appendChild(box.children[0])
+}
+
+box.appendChild(el)
+
+})
+
+})
+
+bank.addEventListener("dragover",e=>e.preventDefault())
+
+bank.addEventListener("drop",e=>{
+
+e.preventDefault()
+
+let id=e.dataTransfer.getData("text")
+let el=document.querySelector('[data-id="'+id+'"]')
+
+bank.appendChild(el)
+
+})
+
+function check(){
+
+boxes.forEach(box=>{
+
+let item=box.querySelector(".item")
+
+if(!item)return
+
+if(item.dataset.id===box.dataset.answer){
+box.classList.add("correct")
+box.classList.remove("wrong")
+}
+else{
+box.classList.add("wrong")
+box.classList.remove("correct")
+}
+
+})
+
+}
+
+function resetGame(){
+
+boxes.forEach(box=>{
+
+while(box.firstChild){
+bank.appendChild(box.firstChild)
+}
+
+box.classList.remove("correct")
+box.classList.remove("wrong")
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
